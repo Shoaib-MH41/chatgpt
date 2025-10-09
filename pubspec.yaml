@@ -1,4 +1,3 @@
----
 name: chatgpt
 description: A new Flutter project.
 publish_to: none
@@ -17,6 +16,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   build_runner: ^2.3.3
   flutter_bloc: ^8.1.2
+  http: ^1.1.0    # ✨ یہ نئی لائن شامل کریں
 dev_dependencies:
   flutter_test:
     sdk: flutter
