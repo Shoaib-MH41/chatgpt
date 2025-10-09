@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chat_gpt_flutter/chat_gpt_flutter.dart';
-import 'package:chatgpt/api_key.dart';
 import 'package:chatgpt/model/question_answer.dart';
 import 'package:chatgpt/theme.dart';
 import 'package:chatgpt/view/components/chatgpt_answer_widget.dart';
@@ -9,7 +8,7 @@ import 'package:chatgpt/view/components/loading_widget.dart';
 import 'package:chatgpt/view/components/text_input_widget.dart';
 import 'package:chatgpt/view/components/user_question_widget.dart';
 import 'package:flutter/material.dart';
-import 'ai_service.dart';  // یہ نئی لائن شامل کریں
+import 'ai_service.dart';  // ✅ یہ لائن رہنے دیں
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
