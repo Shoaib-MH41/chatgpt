@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AIService {
-  static const String baseUrl = 'https://665df17c36450e07a1beb215645f4c17.serveo.net';
+  static const String baseUrl = 'https://04f5716467fa3b02fb5ebae94a89de10.serveo.net
   
   static Future<String> sendMessage(String message) async {
     try {
