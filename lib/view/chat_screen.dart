@@ -9,6 +9,7 @@ import 'package:chatgpt/view/components/loading_widget.dart';
 import 'package:chatgpt/view/components/text_input_widget.dart';
 import 'package:chatgpt/view/components/user_question_widget.dart';
 import 'package:flutter/material.dart';
+import 'ai_service.dart';  // یہ نئی لائن شامل کریں
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     inputQuestionController = TextEditingController();
     scrollController = ScrollController();
-    chatGpt = ChatGpt(apiKey: openAIApiKey);
+    chatGpt = ChatGpt(apiKey: "dummy_key"); // یہاں تبدیلی کی ہے
     super.initState();
   }
 
@@ -124,40 +125,50 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage() async {
     final question = inputQuestionController.text;
+    if (question.isEmpty) return;
+    
     inputQuestionController.clear();
     loadingNotifier.value = true;
 
     setState(() => questionAnswers
         .add(QuestionAnswer(question: question, answer: StringBuffer())));
 
-    final testRequest = CompletionRequest(
-      prompt: [question],
-      stream: true,
-      maxTokens: 500,
-      temperature: 1,
-      model: ChatGptModel.textDavinci003,
-    );
-    await _streamResponse(testRequest)
-        .whenComplete(() => loadingNotifier.value = true);
-  }
-
-  Future _streamResponse(CompletionRequest request) async {
-    streamSubscription?.cancel();
+    // یہ نیا کوڈ ہے - آپ کے Termux AI کو call کرے گا
     try {
-      final stream = await chatGpt.createCompletionStream(request);
-      streamSubscription = stream?.listen((event) {
-        if (event.streamMessageEnd) {
-          streamSubscription?.cancel();
-        } else {
-          setState(() {
-            questionAnswers.last.answer.write(event.choices?.first.text);
-            _scrollToBottom();
-          });
-        }
+      String response = await AIService.sendMessage(question);
+      
+      setState(() {
+        questionAnswers.last.answer.write(response);
+        loadingNotifier.value = false;
       });
+      _scrollToBottom();
+      
     } catch (e) {
-      debugPrint("Error: $e");
-      setState(() => questionAnswers.last.answer.write("error"));
+      setState(() {
+        questionAnswers.last.answer.write("Error: $e");
+        loadingNotifier.value = false;
+      });
     }
   }
+
+  // یہ function ڈیلیٹ کر دیں یا comment out کر دیں
+  // Future _streamResponse(CompletionRequest request) async {
+  //   streamSubscription?.cancel();
+  //   try {
+  //     final stream = await chatGpt.createCompletionStream(request);
+  //     streamSubscription = stream?.listen((event) {
+  //       if (event.streamMessageEnd) {
+  //         streamSubscription?.cancel();
+  //       } else {
+  //         setState(() {
+  //           questionAnswers.last.answer.write(event.choices?.first.text);
+  //           _scrollToBottom();
+  //         });
+  //       }
+  //     });
+  //   } catch (e) {
+  //     debugPrint("Error: $e");
+  //     setState(() => questionAnswers.last.answer.write("error"));
+  //   }
+  // }
 }
